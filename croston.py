@@ -21,20 +21,24 @@ resultFromDB = cursor.fetchall()
 cursor.close()
 connection.close()
 
-# passing data to pandas' data structure
-
+# create partial calendar
 data = pd.DataFrame(resultFromDB, columns=["Date", "Quantity"])
 data["Date"] = data["Date"].apply(pd.to_datetime)
-data["Quantity"] = data["Quantity"].astype(np.int32)
+data["Quantity"] = data["Quantity"].astype(np.float32)
 
-print (data)
-print (data.dtypes)
+# create full range calendar
+range = pd.date_range(data["Date"].iloc[0], data["Date"].iloc[-1]).tolist()
+
+# add column "Quantity" = 0 to dataframe
+demand = pd.DataFrame(range, columns=["Date"])
+demand["Quantity"] = np.float32(0.)
+
+# merge data tu db
+frame = [data, demand]
+demand.combine_first(data)
+demand.update(data)
 
 # plot original demand
-data.plot(x="Date", y="Quantity")
+demand.plot(x="Date", y="Quantity")
 plt.ylim(ymin=0)
 plt.show()
-
-
-
-
