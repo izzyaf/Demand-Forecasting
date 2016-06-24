@@ -1,16 +1,16 @@
-import psycopg2
+import pandas as pd
+import numpy as np
+import matplotlib
+from matplotlib import pyplot as plt
 
-# connect to postgresql
-connection = psycopg2.connect(database="frepple", user="minhphl", password="qweasd")
+matplotlib.style.use("ggplot")
 
-# open a cursor to perform db operations
-cursor = connection.cursor()
-
-# query
-query = "SELECT DATE(DUE), SUM(QUANTITY) FROM DEMAND GROUP BY DUE ORDER BY DUE ASC"
-cursor.execute(query)
-print(cursor.fetchall())
-
-# close connection
-cursor.close()
-connection.close()
+# retail.xlsx
+dfAllItems = pd.read_excel(io="data/retail.xlsx", sheetname="all_items", parse_cols=[1, 2], header=None,
+                           names=["Bucket", "Total orders"])
+print(dfAllItems)
+dfAllItems["Bucket"] = pd.to_datetime(dfAllItems["Bucket"], format="%b %y")
+dfAllItems["Bucket"] = dfAllItems["Bucket"].dt.to_period("M")
+dfAllItems.plot(x="Bucket", y="Total orders")
+plt.ylim(ymin=0)
+plt.show()
