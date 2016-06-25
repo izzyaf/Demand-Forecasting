@@ -1,16 +1,18 @@
 import pandas as pd
-import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
+import preprocessing as pre
 
 matplotlib.style.use("ggplot")
 
-# retail.xlsx
-dfAllItems = pd.read_excel(io="data/retail.xlsx", sheetname="all_items", parse_cols=[1, 2], header=None,
-                           names=["Bucket", "Total orders"])
-print(dfAllItems)
-dfAllItems["Bucket"] = pd.to_datetime(dfAllItems["Bucket"], format="%b %y")
-dfAllItems["Bucket"] = dfAllItems["Bucket"].dt.to_period("M")
-dfAllItems.plot(x="Bucket", y="Total orders")
-plt.ylim(ymin=0)
+rng = pd.period_range("2014-12", "2017-12", freq="M")
+forecastAllItem = pd.DataFrame(index=rng, columns=["Total orders"])
+forecastAllItem.update(pre.dfAllItems)
+forecastAllItem = pd.ewma(forecastAllItem, span=3)
+print(forecastAllItem)
+
+forecastAllItem.plot(ax=pre.dfAllItems.plot())
 plt.show()
+
+
+
