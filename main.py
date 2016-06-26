@@ -2,9 +2,10 @@
 
 from __future__ import print_function
 import pandas as pd
-import numpy as np
-import matplotlib
 from matplotlib import pyplot as plt
+
+import des
+import holtwinters as hw
 
 
 # ------------------------------------------------------------------
@@ -28,7 +29,20 @@ date_format = lambda dates: pd.datetime.strptime(dates, "%Y-%m")
 
 historical_data = parse_csv_file(file_name, date_format)
 
-print(historical_data, file=f)
+alpha, beta = 0.3, 0.3
+# des_result = des.double_exponential_smoothing(historical_data, alpha, beta)
+
+# plt.plot(des_result)
+
+tmp = historical_data.tolist()
+hw_result = hw.multiplicative(tmp, 12, 12)
+
+plt.plot(tmp)
+plt.plot(hw_result[0])
+print(hw_result[1:])
+plt.show()
+
+# print(historical_data, file=f)
 f.close()
 
 # ------------------------------------------------------------------
