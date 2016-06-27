@@ -44,4 +44,4 @@ date_format = lambda dates: pd.datetime.strptime(dates, '%b-%y')
 tshirt_raw = parse_csv_file(file_name, date_format)
 
 # Rolling average
-ma.moving_average(tshirt_raw, 3, 5, file_name)
+ma.moving_average(dataframe=tshirt_raw, window=3, ahead=5, file_name=file_name)
