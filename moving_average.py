@@ -33,7 +33,7 @@ def moving_average(dataframe, window, ahead, file_name):
 
     predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
 
-    out_file_name = 'data/moving_average_result_' + file_name.split('.')[0] + '.txt'
+    out_file_name = 'data/result_' + file_name.split('.')[0] + '_moving_average.txt'
     f = open(out_file_name, 'w')
     print('Full timeframe:\n', file=f)
     print(forecast_frame, file=f)
@@ -85,7 +85,7 @@ def weighted_moving_average(dataframe, window, ahead, file_name):
 
     predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
 
-    out_file_name = 'data/weighted_moving_average_result_' + file_name.split('.')[0] + '.txt'
+    out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average_.txt'
     f = open(out_file_name, 'w')
     print('Full timeframe:\n', file=f)
     print(forecast_frame, file=f)
