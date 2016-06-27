@@ -38,10 +38,17 @@ car_raw = parse_csv_file(file_name, date_format)
 
 # ------------------------------------------------------------------
 
+# Generate tshirt's sales dataframe
+
 file_name = 'tshirt.csv'
 date_format = lambda dates: pd.datetime.strptime(dates, '%b-%y')
 
 tshirt_raw = parse_csv_file(file_name, date_format)
 
-# Rolling average
+# Moving average
 ma.moving_average(dataframe=tshirt_raw, window=3, ahead=5, file_name=file_name)
+
+# Weighted moving average
+ma.weighted_moving_average(dataframe=tshirt_raw, window=5, ahead=5, file_name=file_name)
+
+plt.show()
