@@ -56,15 +56,17 @@ def multiplicative(x, m, fc, alpha=None, beta=None, gamma=None):
         y = [(a[0] + b[0]) * s[0]]
         rmse = 0
 
-        for i in range(len(Y) + fc):
-            if i == len(Y):
-                Y.append((a[-1] + b[-1]) * s[-m])
-
-            a.append(alpha * (Y[i] / s[-m]) + (1 - alpha) * (a[i] + b[i]))
-            b.append(beta * (a[i + 1] - a[i]) + (1 - beta) * b[i])
-            s.append(gamma * (Y[i] / (a[i] + b[i])) + (1 - gamma) * s[i])
-            y.append((a[i + 1] + b[i + 1]) * s[i + 1])
+        t = len(Y)
+        for i in range(t + fc):
+            if i >= t:
+                T = i - t
+                Y.append((a[t - 1] + T * b[t - 1]) * s[i + T - m])
+            else:
+                a.append(alpha * (Y[i] / s[-m]) + (1 - alpha) * (a[i] + b[i]))
+                b.append(beta * (a[i + 1] - a[i]) + (1 - beta) * b[i])
+                s.append(gamma * (Y[i] / (a[i] + b[i])) + (1 - gamma) * s[i])
+                y.append((a[i + 1] + b[i + 1]) * s[i + 1])
 
     rmse = sqrt(sum([(m - n) ** 2 for m, n in zip(Y[:-fc], y[:-fc - 1])]) / len(Y[:-fc]))
 
-    return Y[-fc:], alpha, beta, gamma, rmse
+    return Y[-fc:], alpha, beta, gamma, rmse, y

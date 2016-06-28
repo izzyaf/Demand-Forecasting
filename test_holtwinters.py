@@ -19,11 +19,12 @@ def execute(df, file_name):
     tmp = df.tolist()
 
     m, fc = 12, 12
-    forecast_data, alpha, beta, gamma, rmse = hw.multiplicative(tmp, m, fc)
+    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(tmp, m, fc)
 
-    head = [0 for i in range(len(tmp))]
+    # head = [0 for i in range(len(tmp))]
 
-    head.extend(forecast_data)
+    # head.extend(forecast_data)
+    y.extend(forecast_data)
 
     text = 'rmse = ' + str(round(rmse, 2))
 
@@ -34,12 +35,8 @@ def execute(df, file_name):
     plt.grid(True)
 
     plt.plot(tmp)
-    plt.plot(head)
+    plt.plot(y)
 
     plt.show()
 
 
-file_name = 'car.csv'
-
-df = load_data(file_name)
-execute(df, file_name)
