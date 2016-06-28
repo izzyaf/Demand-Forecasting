@@ -12,4 +12,3 @@ def double_exponential_smoothing(series, alpha, beta):
         trend = beta * (level - last_level) + (1 - beta) * trend
         result.append(level + trend)
     return result
-

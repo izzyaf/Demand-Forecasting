@@ -1,10 +1,9 @@
-import pandas as pd
+from fractions import Fraction
+
 import numpy as np
-import math
-import matplotlib
+import pandas as pd
 from matplotlib import pyplot as plt
 from pandas.tseries.offsets import *
-from fractions import Fraction
 
 
 def moving_average(dataframe, window, ahead, file_name):
@@ -12,7 +11,7 @@ def moving_average(dataframe, window, ahead, file_name):
     date_range = pd.date_range(start=dataframe.index[-1] + DateOffset(months=1), periods=ahead, format=date_format,
                                freq='MS')
 
-    forecast_frame = dataframe.append(pd.Series(data=[0] * ahead, index=date_range))
+    forecast_frame = dataframe.append(pd.Series(data=[np.nan] * ahead, index=date_range))
     forecast_frame.loc[range(window)] = np.nan
 
     for idx in dataframe.index[window:dataframe.count()]:
@@ -35,11 +34,11 @@ def moving_average(dataframe, window, ahead, file_name):
 
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_moving_average.txt'
     f = open(out_file_name, 'w')
-    print('Full timeframe:\n', file=f)
-    print(forecast_frame, file=f)
-    print('\nPartial timeframe:\n', file=f)
-    print(predicted_frame, file=f)
-    print('\nPercentage of accuracy\n', file=f)
+    print('Full timeframe:\n{}'.format(forecast_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Percentage of accuracy\n', file=f)
     print(str(percentage_of_accuracy).strip('[]'), file=f)
 
     f.close()
@@ -85,13 +84,13 @@ def weighted_moving_average(dataframe, window, ahead, file_name):
 
     predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
 
-    out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average_.txt'
+    out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average.txt'
     f = open(out_file_name, 'w')
-    print('Full timeframe:\n', file=f)
-    print(forecast_frame, file=f)
-    print('\nPartial timeframe:\n', file=f)
-    print(predicted_frame, file=f)
-    print('\nPercentage of accuracy\n', file=f)
+    print('Full timeframe:\n{}'.format(forecast_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Percentage of accuracy\n', file=f)
     print(str(percentage_of_accuracy).strip('[]'), file=f)
 
     f.close()

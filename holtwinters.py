@@ -1,6 +1,8 @@
 from __future__ import division
-from sys import exit
+
 from math import sqrt
+from sys import exit
+
 from numpy import array
 from scipy.optimize import fmin_l_bfgs_b
 

@@ -1,8 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-import readFile
 import holtwinters as hw
+import readFile
 
 
 def load_data(file_name):
@@ -43,4 +43,3 @@ file_name = 'car.csv'
 
 df = load_data(file_name)
 execute(df, file_name)
-

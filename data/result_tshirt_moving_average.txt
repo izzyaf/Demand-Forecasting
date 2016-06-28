@@ -1,5 +1,4 @@
 Full timeframe:
-
 2005-04-01    120.0
 2005-05-01    119.0
 2005-06-01    121.0
@@ -16,14 +15,17 @@ Full timeframe:
 2006-05-01    125.0
 dtype: float64
 
-Partial timeframe:
+------------------------
 
+Partial timeframe:
 2006-01-01    127.0
 2006-02-01    125.0
 2006-03-01    124.0
 2006-04-01    125.0
 2006-05-01    125.0
 dtype: float64
+
+------------------------
 
 Percentage of accuracy
 
