@@ -1,44 +1,45 @@
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
-from pandas.tseries.offsets import *
 from statsmodels.tools import eval_measures
 
 
+# --------------------------------------------------------------------------
+
+
 def simple_exponential_smoothing(dataframe, ahead, alpha, file_name):
+    # Datetime format
     date_format = '%b-%y'
-    date_range = pd.date_range(start=dataframe.index[-1] + DateOffset(months=1), periods=ahead, format=date_format,
+
+    # Get size of original dataframe
+    size = dataframe.count()
+
+    # Create ahead-day entries in future
+    date_range = pd.date_range(start=dataframe.index[0], periods=size + ahead, format=date_format,
                                freq='MS')
 
-    forecast_frame = dataframe.append(pd.Series(data=[np.nan] * ahead, index=date_range))
-    forecast_frame.drop(forecast_frame.index[0], inplace=True)
-    for idx in dataframe.index:
-        if dataframe.index.get_loc(idx) == 0:
-            forecast_frame.iloc[0] = dataframe.loc[idx]
+    # Create new dataframe for forecasting
+    forecast_full_frame = pd.Series(data=[np.nan] * (len(date_range)), index=date_range)
+
+    # Begin forecasting
+    for idx in range(len(forecast_full_frame.index) - 1):
+        if idx == 0:
+            forecast_full_frame.iloc[idx + 1] = dataframe.iloc[idx]
+        elif idx < size:
+            forecast_full_frame.iloc[idx + 1] = alpha * dataframe.iloc[idx] + (1 - alpha) * forecast_full_frame.iloc[
+                idx]
         else:
-            forecast_frame.loc[idx + DateOffset(months=1)] = alpha * dataframe.loc[idx] + (1 - alpha) * \
-                                                                                          forecast_frame.loc[
-                                                                                              idx]
-    for idx in date_range[1:ahead]:
-        forecast_frame.loc[idx] = forecast_frame.loc[idx - DateOffset(months=1)]
+            forecast_full_frame.iloc[idx + 1] = forecast_full_frame.iloc[idx]
 
-    predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
+    # Drop all NaN values
+    forecast_full_frame.dropna(inplace=True)
 
-    rmse = eval_measures.rmse(dataframe[1:dataframe.count()], forecast_frame[0:dataframe.count() - 1])
+    # Future timeframe only
+    forecast_partial_frame = forecast_full_frame[~forecast_full_frame.index.isin(dataframe.index)]
 
-    out_file_name = 'data/result_' + file_name.split('.')[0] + '_ses.txt'
-    f = open(out_file_name, 'w')
-    print('Full timeframe:\n{}'.format(forecast_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print
-    print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print('RMSE = {}'.format(rmse), file=f)
+    # Root mean squared error
+    rmse = eval_measures.rmse(dataframe[1:size], forecast_full_frame[0:size - 1])
 
-    f.close()
+    # Return result
+    return forecast_full_frame, forecast_partial_frame, rmse
 
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Single Exponential Smoothing')
-
-    dataframe.plot()
-    forecast_frame.plot()
+# --------------------------------------------------------------------------

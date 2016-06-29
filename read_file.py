@@ -3,6 +3,9 @@ from __future__ import print_function
 import pandas as pd
 
 
+# --------------------------------------------------------------------------
+
+# Process input file
 def parse_csv_file(file_name, date_format):
     name = file_name.split('.')[0]
     file_name = 'data/' + file_name
@@ -15,3 +18,5 @@ def parse_csv_file(file_name, date_format):
     print(data, file=f)
     f.close()
     return data
+
+# --------------------------------------------------------------------------

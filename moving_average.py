@@ -2,101 +2,86 @@ from fractions import Fraction
 
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
-from pandas.tseries.offsets import *
+from statsmodels.tools import eval_measures
 
+
+# --------------------------------------------------------------------------
 
 def moving_average(dataframe, window, ahead, file_name):
+    # Datetime format
     date_format = '%b-%y'
-    date_range = pd.date_range(start=dataframe.index[-1] + DateOffset(months=1), periods=ahead, format=date_format,
+
+    # Create ahead-day entries in future
+    date_range = pd.date_range(start=dataframe.index[0], periods=dataframe.count() + ahead, format=date_format,
                                freq='MS')
 
-    forecast_frame = dataframe.append(pd.Series(data=[np.nan] * ahead, index=date_range))
-    forecast_frame.loc[range(window)] = np.nan
+    # Create new dataframe for forecasting
+    forecast_full_frame = pd.Series(data=[np.nan] * (len(date_range)), index=date_range)
 
-    for idx in dataframe.index[window:dataframe.count()]:
-        forecast_frame.loc[idx] = round(
-            np.mean([dataframe.loc[idx - DateOffset(months=i)] for i in range(1, window + 1)]))
-    for idx in date_range:
-        forecast_frame.loc[idx] = round(np.mean(
-            [forecast_frame.loc[idx - DateOffset(months=i)] for i in range(1, window + 1)]))
+    # Begin forecasting
+    for idx in range(window, len(forecast_full_frame.index)):
+        # Estimation of actual data
+        if idx < dataframe.count():
+            forecast_full_frame.iloc[idx] = round(
+                np.mean([dataframe.iloc[idx - i] for i in range(1, window + 1)]))
+        # Calculation of future data
+        else:
+            forecast_full_frame.iloc[idx] = round(
+                np.mean([forecast_full_frame.iloc[idx - i] for i in range(1, window + 1)]))
 
-    forecast_frame.dropna(inplace=True)
+    # Drop all NaN values
+    forecast_full_frame.dropna(inplace=True)
 
-    percentage_of_accuracy = []
+    # Future timeframe only
+    forecast_partial_frame = forecast_full_frame[~forecast_full_frame.index.isin(dataframe.index)]
 
-    for idx in dataframe.index[window:dataframe.count() - window]:
-        percentage_of_accuracy.extend(
-            ['{0}%'.format(round(np.mean([dataframe.loc[idx + DateOffset(months=i)] for i in range(window)]) / np.mean(
-                [forecast_frame.loc[idx + DateOffset(months=i)] for i in range(window)]) * 100))])
+    # Root mean squared error
+    rmse = eval_measures.rmse(dataframe[window:dataframe.count()], forecast_full_frame[:dataframe.count() - window])
 
-    predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
+    # Return result
+    return forecast_full_frame, forecast_partial_frame, rmse
 
-    out_file_name = 'data/result_' + file_name.split('.')[0] + '_moving_average.txt'
-    f = open(out_file_name, 'w')
-    print('Full timeframe:\n{}'.format(forecast_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print('Percentage of accuracy\n', file=f)
-    print(str(percentage_of_accuracy).strip('[]'), file=f)
 
-    f.close()
-
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Moving Average')
-
-    dataframe.plot()
-    forecast_frame.plot()
-
+# --------------------------------------------------------------------------
 
 def weighted_moving_average(dataframe, window, ahead, file_name):
+    # Datetime format
     date_format = '%b-%y'
-    date_range = pd.date_range(start=dataframe.index[-1] + DateOffset(months=1), periods=ahead, format=date_format,
+
+    # Create ahead-day entries in future
+    date_range = pd.date_range(start=dataframe.index[0], periods=dataframe.count() + ahead, format=date_format,
                                freq='MS')
-    forecast_frame = dataframe.append(pd.Series(data=[0] * ahead, index=date_range))
-    forecast_frame.loc[range(window)] = np.nan
 
+    # Create new dataframe for forecasting
+    forecast_full_frame = pd.Series(data=[np.nan] * (len(date_range)), index=date_range)
+
+    # Init weights
     weight_array = []
-
     for i in range(1, window + 1):
         weight_array.append(Fraction(i * 2, pow(window, 2) + window))
 
-    for idx in dataframe.index[window:dataframe.count()]:
-        forecast_frame.loc[idx] = round(np.sum([
-                                                   dataframe.loc[idx - DateOffset(months=i)] * float(
-                                                       weight_array[window - i])
-                                                   for i in range(1, window + 1)]))
-    for idx in date_range:
-        forecast_frame.loc[idx] = round(np.sum([
-                                                   forecast_frame.loc[idx - DateOffset(months=i)] * weight_array[
-                                                       window - i] for i in
-                                                   range(1, window + 1)]))
+    # Begin forecasting
+    for idx in range(window, len(forecast_full_frame.index)):
+        # Estimation of actual data
+        if idx < len(dataframe.index):
+            forecast_full_frame.iloc[idx] = round(
+                np.sum([dataframe.iloc[idx - i] * float(weight_array[window - i]) for i in range(1, window + 1)]))
+        # Calculation of future data
+        else:
+            forecast_full_frame.iloc[idx] = round(
+                np.sum([forecast_full_frame.iloc[idx - i] * float(weight_array[window - i]) for i in
+                        range(1, window + 1)]))
 
-    forecast_frame.dropna(inplace=True)
+    # Drop all NaN values
+    forecast_full_frame.dropna(inplace=True)
 
-    percentage_of_accuracy = []
+    # Future timeframe only
+    forecast_partial_frame = forecast_full_frame[~forecast_full_frame.index.isin(dataframe.index)]
 
-    for idx in dataframe.index[window:dataframe.count() - window]:
-        percentage_of_accuracy.extend(
-            ['{0}%'.format(round(np.mean([dataframe.loc[idx + DateOffset(months=i)] for i in range(window)]) / np.mean(
-                [forecast_frame.loc[idx + DateOffset(months=i)] for i in range(window)]) * 100))])
+    # Root mean squared error
+    rmse = eval_measures.rmse(dataframe[window:dataframe.count()], forecast_full_frame[:dataframe.count() - window])
 
-    predicted_frame = forecast_frame[~forecast_frame.index.isin(dataframe.index)]
+    # Return result
+    return forecast_full_frame, forecast_partial_frame, rmse
 
-    out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average.txt'
-    f = open(out_file_name, 'w')
-    print('Full timeframe:\n{}'.format(forecast_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
-    print('\n------------------------\n', file=f)
-    print('Percentage of accuracy\n', file=f)
-    print(str(percentage_of_accuracy).strip('[]'), file=f)
-
-    f.close()
-
-    fig = plt.figure(1)
-    fig.canvas.set_window_title('Weighted Moving Average')
-
-    dataframe.plot()
-    forecast_frame.plot()
+# --------------------------------------------------------------------------

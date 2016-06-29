@@ -2,39 +2,55 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 import holtwinters as hw
-import readFile
+import read_file
 
 
+# --------------------------------------------------------------------------
+
+# Parse input file
 def load_data(file_name):
-    # Generate quebec's car sales dataframe
-
+    # Date format
     date_format = lambda dates: pd.datetime.strptime(dates, '%Y-%m')
 
-    car_raw = readFile.parse_csv_file(file_name, date_format)
+    # Generate car sales dataframe
+    car_raw = read_file.parse_csv_file(file_name, date_format)
 
+    # Return dataframe
     return car_raw
 
 
-def execute(df, file_name):
-    # tmp = df.tolist()
+# --------------------------------------------------------------------------
 
+# Holt-Winters exponential smoothing with multiplicative
+def execute(dataframe, file_name):
+    # Parameters
     m, fc = 12, 12
-    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(df, m, fc)
 
-    # head = [0 for i in range(len(tmp))]
+    # Generate result
+    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(dataframe, m, fc)
 
-    # head.extend(forecast_data)
     y.append(forecast_data)
 
     text = 'rmse = ' + str(round(rmse, 2))
 
-    plt.xlabel('Bucket')
-    plt.ylabel('Demand Values')
-    plt.title('Holt Winters Exponential Smoothing with Multiplicative')
-    plt.text(10, 2500, text)
-    plt.grid(True)
+    # Log result to file
+    out_file_name = 'data/result_' + file_name.split('.')[0] + '_holt_winter.txt'
+    f = open(out_file_name, 'w')
+    print('Full timeframe:\n{}'.format(y), file=f)
+    print('\n------------------------\n', file=f)
+    print('Partial timeframe:\n{}'.format(forecast_data), file=f)
+    print('\n------------------------\n', file=f)
+    print('RMSE = {}'.format(rmse), file=f)
 
-    plt.plot(df, color='red')
-    plt.plot(y, color='blue')
+    f.close()
+
+    # Plot
+    fig = plt.figure(0)
+    fig.canvas.set_window_title('Holt-Winters Exponential Smoothing with Multiplicative')
+
+    dataframe.plot()
+    y.plot()
 
     plt.show()
+
+# --------------------------------------------------------------------------

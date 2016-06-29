@@ -1,12 +1,12 @@
-# Import
-
 from __future__ import print_function
 
 import test_des as tdes
 import test_holtwinters as thw
-import test_movingAverage as tma
+import test_moving_average as tma
 import test_ses as tses
 
+
+# --------------------------------------------------------------------------
 
 def ses():
     # test simple exponential smoothing
@@ -15,6 +15,8 @@ def ses():
     data_frame = tses.load_data(input_file_name)
     tses.execute(data_frame, input_file_name)
 
+
+# --------------------------------------------------------------------------
 
 def des():
     print('Test double exponential smoothing')
@@ -25,21 +27,36 @@ def des():
     tdes.execute(df, alpha, beta, file_name)
 
 
+# --------------------------------------------------------------------------
+
 def mva():
     # test moving average
     print('Test moving average')
     input_file_name = 'tshirt.csv'
     data_frame = tma.load_data(input_file_name)
-    tma.execute(data_frame, input_file_name)
+    tma.execute_ma(data_frame, input_file_name)
 
+
+# --------------------------------------------------------------------------
+
+def wmva():
+    # test weighted moving average
+    print('Test weighted moving average')
+    input_file_name = 'tshirt.csv'
+    data_frame = tma.load_data(input_file_name)
+    tma.execute_wma(data_frame, input_file_name)
+
+
+# --------------------------------------------------------------------------
 
 def hw():
     print('Test Holt Winters')
     file_name = 'car.csv'
-
     df = thw.load_data(file_name)
     thw.execute(df, file_name)
 
+
+# --------------------------------------------------------------------------
 
 def show_menu():
     print("------------------- DEMAND FORECASTING -------------------")
@@ -47,8 +64,11 @@ def show_menu():
     print("2. Double Exponential Smoothing")
     print("3. Holt Winters Exponential Smoothing with Multiplicative")
     print("4. Moving Average")
+    print("5. Weighted Moving Average")
     print("0. Quit\n")
 
+
+# --------------------------------------------------------------------------
 
 def __main__():
     while True:
@@ -70,5 +90,10 @@ def __main__():
         elif choice == 4:
             mva()
 
+        elif choice == 5:
+            wmva()
+
+
+# --------------------------------------------------------------------------
 
 __main__()

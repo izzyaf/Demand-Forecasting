@@ -2,6 +2,8 @@ import pandas as pd
 from pandas.tseries.offsets import *
 
 
+# --------------------------------------------------------------------------
+
 # input are series of data, alpha and beta. Output is result data after forecast
 def double_exponential_smoothing(series, alpha, beta):
     # result = [series[0]]
@@ -29,3 +31,5 @@ def double_exponential_smoothing(series, alpha, beta):
         trend = beta * (level - last_level) + (1 - beta) * trend
         result.append(pd.Series(data=level + trend, index=[result.index[result.count() - 1] + DateOffset(months=1)]))
     return result
+
+# --------------------------------------------------------------------------

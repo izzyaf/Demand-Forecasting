@@ -1,12 +1,12 @@
 from __future__ import division
 
-from math import sqrt
-
 import numpy as np
 import pandas as pd
 from pandas.tseries.offsets import *
 from scipy.optimize import fmin_l_bfgs_b
 
+
+# --------------------------------------------------------------------------
 
 # def RMSE(params, *args):
 #     Y = args[0]
@@ -60,7 +60,7 @@ def RMSE(params, *args):
     else:
         exit('Type must be multiplicative')
 
-    rmse = sqrt(sum([(m - n) ** 2 for m, n in zip(dataframe, y[:-1])]) / dataframe.count())
+    rmse = np.sqrt(sum([(m - n) ** 2 for m, n in zip(dataframe, y[:-1])]) / dataframe.count())
 
     return rmse
 
@@ -100,6 +100,8 @@ def RMSE(params, *args):
 #
 #     return Y[-fc:], alpha, beta, gamma, rmse, y
 
+# --------------------------------------------------------------------------
+
 # Holt Winters Exponential Smoothing with multiplicative
 def multiplicative(x, m, fc, alpha=None, beta=None, gamma=None):
     dataframe = x.copy()
@@ -133,6 +135,8 @@ def multiplicative(x, m, fc, alpha=None, beta=None, gamma=None):
                 y.append(pd.Series(data=(a[i + 1] + b[i + 1]) * s[i + 1],
                                    index=[y.index[y.count() - 1] + DateOffset(months=1)]))
 
-    rmse = sqrt(sum([(m - n) ** 2 for m, n in zip(dataframe[:-fc], y[:-fc - 1])]) / len(dataframe.iloc[:-fc]))
+    rmse = np.sqrt(sum([(m - n) ** 2 for m, n in zip(dataframe[:-fc], y[:-fc - 1])]) / len(dataframe.iloc[:-fc]))
 
     return dataframe.iloc[-fc:], alpha, beta, gamma, rmse, y
+
+# --------------------------------------------------------------------------

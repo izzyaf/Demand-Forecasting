@@ -11,7 +11,7 @@ Full timeframe:
 2006-03-01    127.0
 2006-04-01    127.0
 2006-05-01    127.0
-dtype: float64
+Freq: MS, dtype: float64
 
 ------------------------
 
@@ -21,10 +21,8 @@ Partial timeframe:
 2006-03-01    127.0
 2006-04-01    127.0
 2006-05-01    127.0
-dtype: float64
+Freq: MS, dtype: float64
 
 ------------------------
 
-Percentage of accuracy
-
-'102.0%', '98.0%'
+RMSE = 11.994046142029923

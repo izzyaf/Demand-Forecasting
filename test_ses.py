@@ -1,20 +1,52 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-import readFile
+import read_file
 import ses
 
 
-def load_data(file_name):
-    # Generate diet product's sales dataframe
+# --------------------------------------------------------------------------
 
+# Parse input file
+def load_data(file_name):
+    # Date format
     date_format = lambda dates: pd.datetime.strptime(dates, '%b-%y')
 
-    diet_raw = readFile.parse_csv_file(file_name, date_format)
+    # Generate diet product sales dataframe
+    diet_raw = read_file.parse_csv_file(file_name, date_format)
+
+    # Return dataframe
     return diet_raw
 
 
-def execute(df, file_name):
-    ses.simple_exponential_smoothing(dataframe=df, ahead=5, alpha=0.2, file_name=file_name)
+# --------------------------------------------------------------------------
+
+# Simple exponential smoothing
+def execute(dataframe, file_name):
+    # Generate result
+    forecast_full_frame, forecast_partial_frame, rmse = ses.simple_exponential_smoothing(dataframe=dataframe, ahead=5,
+                                                                                         alpha=0.2, file_name=file_name)
+
+    # Log result to file
+    out_file_name = 'data/result_' + file_name.split('.')[0] + '_ses.txt'
+    f = open(out_file_name, 'w')
+
+    print('Full timeframe:\n{}'.format(forecast_full_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print
+    print('Partial timeframe:\n{}'.format(forecast_partial_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('RMSE = {}'.format(rmse), file=f)
+
+    f.close()
+
+    # Plot
+    fig = plt.figure(0)
+    fig.canvas.set_window_title('Single Exponential Smoothing')
+
+    dataframe.plot()
+    forecast_full_frame.plot()
 
     plt.show()
+
+# --------------------------------------------------------------------------
