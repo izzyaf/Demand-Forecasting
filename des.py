@@ -1,5 +1,5 @@
-import pandas as pd
 from pandas.tseries.offsets import *
+import pandas as pd
 
 
 # --------------------------------------------------------------------------
