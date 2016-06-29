@@ -23,12 +23,10 @@ def load_data(file_name):
 # Holt-Winters exponential smoothing with multiplicative
 def execute(dataframe, file_name):
     # Parameters
-    m, fc = 12, 12
+    period_len, next_periods = 12, 12
 
     # Generate result
-    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(dataframe, m, fc)
-
-    y.append(forecast_data)
+    forecast_data, alpha, beta, gamma, rmse = hw.multiplicative(dataframe, period_len, next_periods)
 
     text = 'rmse = ' + str(round(rmse, 2))
 
@@ -36,9 +34,9 @@ def execute(dataframe, file_name):
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_holt_winter.txt'
     f = open(out_file_name, 'w')
 
-    print('Full timeframe:\n{}'.format(y), file=f)
+    print('Full timeframe:\n{}'.format(forecast_data), file=f)
     print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(forecast_data), file=f)
+    print('Partial timeframe:\n{}'.format(forecast_data[-next_periods:]), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
@@ -49,7 +47,7 @@ def execute(dataframe, file_name):
     fig.canvas.set_window_title('Holt-Winters Exponential Smoothing with Multiplicative')
 
     dataframe.plot()
-    y.plot()
+    forecast_data.plot()
 
     plt.show()
 
