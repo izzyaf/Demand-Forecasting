@@ -1,6 +1,6 @@
+from statsmodels.tools import eval_measures
 import numpy as np
 import pandas as pd
-from statsmodels.tools import eval_measures
 
 
 # --------------------------------------------------------------------------
