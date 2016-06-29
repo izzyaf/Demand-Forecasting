@@ -1,12 +1,11 @@
 # Import
 
 from __future__ import print_function
-import sys
 
-import test_movingAverage as tma
-import test_ses as tses
 import test_des as tdes
 import test_holtwinters as thw
+import test_movingAverage as tma
+import test_ses as tses
 
 
 def ses():
@@ -52,7 +51,6 @@ def show_menu():
 
 
 def __main__():
-
     while True:
         show_menu()
         choice = int(input("Enter method: "))
@@ -74,4 +72,3 @@ def __main__():
 
 
 __main__()
-
