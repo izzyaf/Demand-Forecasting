@@ -1,9 +1,9 @@
 from __future__ import division
-
-import numpy as np
-import pandas as pd
 from pandas.tseries.offsets import *
 from scipy.optimize import fmin_l_bfgs_b
+import numpy as np
+import pandas as pd
+
 
 
 # --------------------------------------------------------------------------
