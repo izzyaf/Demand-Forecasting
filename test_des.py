@@ -1,8 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-import readFile
 import des
+import readFile
 
 
 def load_data(file_name):
@@ -15,11 +15,13 @@ def load_data(file_name):
 
 
 def execute(df, alpha, beta, file_name):
-    tmp = df.tolist()
+    # tmp = df.tolist()
+    #
+    # des_result = des.double_exponential_smoothing(tmp, alpha, beta)
 
-    des_result = des.double_exponential_smoothing(tmp, alpha, beta)
+    des_result = des.double_exponential_smoothing(df, alpha, beta)
 
-    plt.plot(tmp)
+    plt.plot(df)
     plt.plot(des_result)
 
     plt.show()

@@ -16,15 +16,15 @@ def load_data(file_name):
 
 
 def execute(df, file_name):
-    tmp = df.tolist()
+    # tmp = df.tolist()
 
     m, fc = 12, 12
-    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(tmp, m, fc)
+    forecast_data, alpha, beta, gamma, rmse, y = hw.multiplicative(df, m, fc)
 
     # head = [0 for i in range(len(tmp))]
 
     # head.extend(forecast_data)
-    y.extend(forecast_data)
+    y.append(forecast_data)
 
     text = 'rmse = ' + str(round(rmse, 2))
 
@@ -34,9 +34,7 @@ def execute(df, file_name):
     plt.text(10, 2500, text)
     plt.grid(True)
 
-    plt.plot(tmp)
-    plt.plot(y)
+    plt.plot(df, color='red')
+    plt.plot(y, color='blue')
 
     plt.show()
-
-
