@@ -36,6 +36,7 @@ def execute(dataframe, file_name):
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_holt_winter.txt'
     f = open(out_file_name, 'w')
+
     print('Full timeframe:\n{}'.format(y), file=f)
     print('\n------------------------\n', file=f)
     print('Partial timeframe:\n{}'.format(forecast_data), file=f)
