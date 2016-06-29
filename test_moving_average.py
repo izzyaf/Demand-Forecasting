@@ -1,6 +1,5 @@
-import pandas as pd
 from matplotlib import pyplot as plt
-
+import pandas as pd
 import moving_average as ma
 import read_file
 
