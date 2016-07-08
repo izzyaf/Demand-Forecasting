@@ -19,7 +19,7 @@ def ses():
 
 def des():
     print('Test double exponential smoothing')
-    file_name = 'car.csv'
+    file_name = 'm3.csv'
 
     df = tdes.load_data(file_name)
     tdes.execute(df, file_name)
