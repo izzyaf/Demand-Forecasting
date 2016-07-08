@@ -23,8 +23,7 @@ def load_data(file_name):
 # Simple exponential smoothing
 def execute(dataframe, file_name):
     # Generate result
-    forecast_full_frame, forecast_partial_frame, rmse = ses.simple_exponential_smoothing(dataframe=dataframe, ahead=5,
-                                                                                         alpha=0.2, file_name=file_name)
+    forecast_full_frame, forecast_partial_frame, rmse = ses.simple_exponential_smoothing(dataframe=dataframe, next_periods=5)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_ses.txt'

@@ -1,4 +1,5 @@
 from statsmodels.tools import eval_measures
+from scipy.optimize import fmin_l_bfgs_b
 import numpy as np
 import pandas as pd
 
@@ -6,7 +7,28 @@ import pandas as pd
 # --------------------------------------------------------------------------
 
 
-def simple_exponential_smoothing(dataframe, ahead, alpha, file_name):
+def RMSE(params, *args):
+    data_frame = args[0]
+    alpha = params
+
+    rmse = 0
+
+    forecast = [0] * data_frame.count()
+
+    forecast[1] = data_frame.iloc[0]
+
+    for index in range(2, data_frame.count()):
+        forecast[index] = alpha * data_frame.iloc[index - 1] + (1 - alpha) * forecast[index - 1]
+
+    rmse = eval_measures.rmse(forecast[1:], data_frame[1:])
+
+    return rmse
+
+
+# --------------------------------------------------------------------------
+
+
+def simple_exponential_smoothing(dataframe, next_periods, alpha=None):
     # Datetime format
     date_format = '%b-%y'
 
@@ -14,11 +36,18 @@ def simple_exponential_smoothing(dataframe, ahead, alpha, file_name):
     size = dataframe.count()
 
     # Create ahead-day entries in future
-    date_range = pd.date_range(start=dataframe.index[0], periods=size + ahead, format=date_format,
-                               freq='MS')
+    date_range = pd.date_range(start=dataframe.index[0], periods=size + next_periods, format=date_format, freq='MS')
 
     # Create new dataframe for forecasting
     forecast_full_frame = pd.Series(data=[np.nan] * (len(date_range)), index=date_range)
+
+    if alpha is None:
+        initial_values = np.array([0.0])
+        boundaries = [(0, 1)]
+
+        parameters = fmin_l_bfgs_b(RMSE, x0=initial_values, args=(dataframe, next_periods), bounds=boundaries,
+                                   approx_grad=True)
+        alpha = parameters[0]
 
     # Begin forecasting
     for idx in range(len(forecast_full_frame.index) - 1):

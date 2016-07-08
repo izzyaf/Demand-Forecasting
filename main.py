@@ -21,9 +21,8 @@ def des():
     print('Test double exponential smoothing')
     file_name = 'car.csv'
 
-    alpha, beta = 0.3, 0.3
     df = tdes.load_data(file_name)
-    tdes.execute(df, alpha, beta, file_name)
+    tdes.execute(df, file_name)
 
 
 # --------------------------------------------------------------------------

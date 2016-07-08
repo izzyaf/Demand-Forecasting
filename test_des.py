@@ -21,23 +21,26 @@ def load_data(file_name):
 # --------------------------------------------------------------------------
 
 # Double exponential smoothing
-def execute(dataframe, alpha, beta, file_name):
+def execute(dataframe, file_name):
+
+    next_period = 12
+
     # Generate result
-    des_result = des.double_exponential_smoothing(dataframe, alpha, beta)
+    des_result, rmse = des.double_exponential_smoothing(dataframe, next_period)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_double_exponential_smoothing.txt'
     f = open(out_file_name, 'w')
 
-    print('Full timeframe:\n{}'.format(des_result), file=f)
+    print('Full time frame:\n{}'.format(des_result), file=f)
     print('\n------------------------\n', file=f)
 
-    # Bổ sung đoạn timeframe dự đoán thêm vào đây
-    # print('Partial timeframe:\n{}'.format(predicted_frame), file=f)
-    # print('\n------------------------\n', file=f)
+    predicted_frame = des_result[-next_period:]
 
-    # Chỗ này để RMSE = sai số
-    # print('RMSE = {}'.format(rmse), file=f)
+    print('Partial time frame:\n{}'.format(predicted_frame), file=f)
+    print('\n------------------------\n', file=f)
+
+    print('RMSE = {}'.format(rmse), file=f)
 
     f.close()
 
