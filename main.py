@@ -3,6 +3,7 @@ import test_des as tdes
 import test_holtwinters as thw
 import test_moving_average as tma
 import test_ses as tses
+import test_croston as tcr
 
 
 # --------------------------------------------------------------------------
@@ -56,6 +57,17 @@ def hw():
 
 # --------------------------------------------------------------------------
 
+
+def croston():
+    print('Test Croston\'s Method')
+    file_name = 'umpire_chair_sales.csv'
+    df = tcr.load_data(file_name)
+    tcr.execute(df, file_name)
+
+
+# --------------------------------------------------------------------------
+
+
 def show_menu():
     print("------------------- DEMAND FORECASTING -------------------")
     print("1. Single Exponential Smoothing")
@@ -63,6 +75,7 @@ def show_menu():
     print("3. Holt Winters Exponential Smoothing with Multiplicative")
     print("4. Moving Average")
     print("5. Weighted Moving Average")
+    print("6. Croston\'s Method")
     print("0. Quit\n")
 
 
@@ -90,6 +103,8 @@ def __main__():
 
         elif choice == 5:
             wmva()
+        elif choice == 6:
+            croston()
 
 
 # --------------------------------------------------------------------------
