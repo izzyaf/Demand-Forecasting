@@ -4,9 +4,47 @@ import numpy as np
 import pandas as pd
 
 
+def RMSE(params, *args):
+    data_frame = args[0]
+    alpha = params
+
+    rmse = 0
+
+    forecast = [0] * len(data_frame)
+
+    forecast[1] = data_frame[0]
+
+    for index in range(2, len(data_frame)):
+        forecast[index] = alpha * data_frame[index - 1] + (1 - alpha) * forecast[index - 1]
+
+    rmse = eval_measures.rmse(forecast[1:], data_frame[1:])
+
+    return rmse
+
+
 # -------------------------------------------------
+def prepare(dataframe):
+    non_zero_demand = []
+    # inter-arrival between two non-demand
+    q = []
+
+    # mapping between dataframe index and non_zero_demand index
+    map = []
+
+    for i in range(dataframe.count()):
+        if dataframe.iloc[i] != 0:
+            non_zero_demand.append(dataframe.iloc[i])
+            q.append(i + 1)
+            map.append(i)
+
+    # calculate q
+    for i in reversed(range(1, len(q))):
+        q[i] = q[i] - q[i - 1]
+
+    return non_zero_demand, q, map
 
 
+# -------------------------------------------------
 def croston_method(dataframe, next_periods, alpha=None):
     # Datetime format
     date_format = '%Y-%m'
@@ -18,43 +56,44 @@ def croston_method(dataframe, next_periods, alpha=None):
     date_range = pd.date_range(start=dataframe.index[0], periods=size + next_periods, format=date_format, freq='MS')
 
     # Create new dataframe for forecasting
-    forecast_full_frame = pd.Series(data=[np.nan] * (len(date_range)), index=date_range)
+    forecast_full_frame = pd.Series(data=[0] * (len(date_range)), index=date_range)
+
+    # prepare non-zero demand
+    non_zero_demand, q, map = prepare(dataframe)
+
+    # n-th non-zero demand
+    n = len(q)
+
+    forecast_non_zero_demand = [0] * n
+    inter_arrival = [0] * n
 
     if alpha is None:
-        alpha = 0.3
+        initial_values = np.array([0.0])
+        boundaries = [(0, 1)]
 
-    # Estimate of intervals between demands
-    X = [0] * size
-    # count number of zero-demand
-    q = 2
-    last_period_non_zero = 0
+        parameters = fmin_l_bfgs_b(RMSE, x0=initial_values, args=(non_zero_demand, next_periods), bounds=boundaries,
+                                   approx_grad=True)
+        alpha = parameters[0]
 
-    # Init values
-    if dataframe.iloc[0] == 0:
-        forecast_full_frame.iloc[0] = 1
-        X[0] = 2
-    else:
-        forecast_full_frame.iloc[0] = dataframe.iloc[0]
-        X[0] = 1
-        q = 1
-        last_period_non_zero = 1
+    forecast_non_zero_demand[1] = non_zero_demand[0]
+    inter_arrival[1] = q[0]
+
+    for i in range(2, n):
+        forecast_non_zero_demand[i] = alpha * non_zero_demand[i - 1] + (1 - alpha) * forecast_non_zero_demand[i - 1]
+        inter_arrival[i] = alpha * q[i - 1] + (1 - alpha) * inter_arrival[i - 1]
+
+    print(alpha)
+    print(q)
+    print(inter_arrival)
 
     # predict values
-    for i in range(1, size):
-        if dataframe.iloc[i] == 0:
-            q += 1
-            forecast_full_frame.iloc[i] = forecast_full_frame.iloc[i - 1]
-            X[i] = X[i - 1]
-        else:
-            forecast_full_frame.iloc[i] = (1 - alpha) * forecast_full_frame.iloc[i - 1] + alpha * dataframe.iloc[i]
-            X[i] = (1 - alpha) * X[i - 1] + alpha * q
-            q = 1
-            last_period_non_zero = i
+    for i in range(n):
+        forecast_full_frame.iloc[map[i]] = forecast_non_zero_demand[i]
 
     # forecast new values
     for i in range(size, size + next_periods):
-        forecast_full_frame.iloc[i] = forecast_full_frame.iloc[last_period_non_zero] / X[last_period_non_zero]
+        forecast_full_frame.iloc[i] = forecast_non_zero_demand[n - 1] / inter_arrival[n - 1]
 
-    rmse = eval_measures.rmse(dataframe, forecast_full_frame[0:size])
+    rmse = eval_measures.rmse(non_zero_demand[1:], forecast_non_zero_demand[1:])
 
     return forecast_full_frame, forecast_full_frame[-next_periods:], rmse

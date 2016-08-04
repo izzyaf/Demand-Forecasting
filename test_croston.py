@@ -18,7 +18,7 @@ def load_data(file_name):
 
 # execute Croston Method
 def execute(dataframe, file_name):
-    forecast_full_frame, forecast_partial_frame, rmse = croston.croston_method(dataframe=dataframe, next_periods=12, alpha=0.3)
+    forecast_full_frame, forecast_partial_frame, rmse = croston.croston_method(dataframe=dataframe, next_periods=12)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_croston.txt'

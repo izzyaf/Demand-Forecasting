@@ -28,7 +28,7 @@ def RMSE(params, *args):
         for i in range(period_len, dataframe.count()):
             smooth.append(alpha * (dataframe.iloc[i] / season[-period_len]) + (1 - alpha) * (smooth[-1] + trend[-1]))
             trend.append(beta * (smooth[i] - smooth[-1]) + (1 - beta) * trend[-1])
-            season.append(gamma * (dataframe.iloc[i] / (smooth[-1] + trend[-1])) + (1 - gamma) * season[-period_len])
+            season.append(gamma * (dataframe.iloc[i] / (smooth[i])) + (1 - gamma) * season[-period_len])
             forecast.append((smooth[-1] + trend[-1]) * season[-period_len])
 
     else:
@@ -81,7 +81,7 @@ def multiplicative(input_dataframe, period_len, next_periods, alpha=None, beta=N
         else:
             smooth.append(alpha * (dataframe[i] / season[-period_len]) + (1 - alpha) * (smooth[-1] + trend[-1]))
             trend.append(beta * (smooth[i] - smooth[-1]) + (1 - beta) * trend[-1])
-            season.append(gamma * (dataframe[i] / (smooth[-1] + trend[-1])) + (1 - gamma) * season[-period_len])
+            season.append(gamma * (dataframe[i] / (smooth[i])) + (1 - gamma) * season[-period_len])
             forecast.iloc[i - period_len] = (smooth[-1] + trend[-1]) * season[-period_len]
 
     rmse = eval_measures.rmse(dataframe[period_len:], forecast[:-period_len])

@@ -60,7 +60,7 @@ def hw():
 
 def croston():
     print('Test Croston\'s Method')
-    file_name = 'umpire_chair_sales.csv'
+    file_name = 'demo.csv'
     df = tcr.load_data(file_name)
     tcr.execute(df, file_name)
 
