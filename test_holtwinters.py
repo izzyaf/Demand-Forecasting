@@ -1,5 +1,6 @@
-from matplotlib import pyplot as plt
 import pandas as pd
+from matplotlib import pyplot as plt
+
 import holtwinters as hw
 import read_file
 
@@ -27,8 +28,6 @@ def execute(dataframe, file_name):
 
     # Generate result
     forecast_data, alpha, beta, gamma, rmse = hw.multiplicative(dataframe, period_len, next_periods)
-
-    text = 'rmse = ' + str(round(rmse, 2))
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_holt_winter.txt'
