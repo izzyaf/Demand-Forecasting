@@ -53,9 +53,10 @@ def execute_ma(dataframe, file_name):
 # Weighted moving average
 def execute_wma(dataframe, file_name):
     # Generate result
-    forecast_full_frame, forecast_partial_frame, rmse = ma.weighted_moving_average(dataframe=dataframe, window=3,
-                                                                                   ahead=5,
-                                                                                   file_name=file_name)
+    forecast_full_frame, forecast_partial_frame, rmse, weight = ma.weighted_moving_average(dataframe=dataframe,
+                                                                                           window=3,
+                                                                                           ahead=5,
+                                                                                           file_name=file_name)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average.txt'
@@ -64,6 +65,8 @@ def execute_wma(dataframe, file_name):
     print('Full timeframe:\n{}'.format(forecast_full_frame), file=f)
     print('\n------------------------\n', file=f)
     print('Partial timeframe:\n{}'.format(forecast_partial_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Weight:\n{}'.format(weight), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 

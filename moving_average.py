@@ -1,7 +1,8 @@
 from fractions import Fraction
-from statsmodels.tools import eval_measures
+
 import numpy as np
 import pandas as pd
+from statsmodels.tools import eval_measures
 
 
 # --------------------------------------------------------------------------
@@ -81,6 +82,6 @@ def weighted_moving_average(dataframe, window, ahead, file_name):
     rmse = eval_measures.rmse(dataframe[window:dataframe.count()], forecast_full_frame[:dataframe.count() - window])
 
     # Return result
-    return forecast_full_frame, forecast_partial_frame, rmse
+    return forecast_full_frame, forecast_partial_frame, rmse, weight_array
 
 # --------------------------------------------------------------------------
