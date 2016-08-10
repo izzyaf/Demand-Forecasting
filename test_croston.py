@@ -8,7 +8,7 @@ import read_file
 # load data
 def load_data(file_name):
     # Date format
-    date_format = lambda dates: pd.datetime.strptime(dates, '%Y-%m')
+    date_format = lambda dates: pd.datetime.strptime(dates, '%b-%y')
 
     # Generate diet product sales dataframe
     umpire_chair_raw = read_file.parse_csv_file(file_name, date_format)
@@ -36,13 +36,12 @@ def execute(dataframe, file_name):
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_full_frame], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Croston\'s Method')
-
-    dataframe.plot()
-    forecast_full_frame.plot()
-
+    result.plot()
     plt.show()
 
 # --------------------------------------------------------------------------

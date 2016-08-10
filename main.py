@@ -1,9 +1,10 @@
 from __future__ import print_function
+
+import test_croston as tcr
 import test_des as tdes
 import test_holtwinters as thw
 import test_moving_average as tma
 import test_ses as tses
-import test_croston as tcr
 
 
 # --------------------------------------------------------------------------
@@ -11,7 +12,7 @@ import test_croston as tcr
 def ses():
     # test simple exponential smoothing
     print('Test simple exponential smoothing')
-    input_file_name = 'diet_product.csv'
+    input_file_name = 'ses_sales_diet_product.csv'
     data_frame = tses.load_data(input_file_name)
     tses.execute(data_frame, input_file_name)
 
@@ -60,7 +61,7 @@ def hw():
 
 def croston():
     print('Test Croston\'s Method')
-    file_name = 'demo.csv'
+    file_name = 'intermittent_umpire_chair_paris.csv'
     df = tcr.load_data(file_name)
     tcr.execute(df, file_name)
 

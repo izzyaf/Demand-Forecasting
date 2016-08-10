@@ -41,13 +41,12 @@ def execute(dataframe, file_name):
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_full_frame], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Single Exponential Smoothing')
-
-    dataframe.plot()
-    forecast_full_frame.plot()
-
+    result.plot()
     plt.show()
 
 # --------------------------------------------------------------------------

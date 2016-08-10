@@ -27,27 +27,26 @@ def execute(dataframe, file_name):
     period_len, next_periods = 12, 12
 
     # Generate result
-    forecast_data, alpha, beta, gamma, rmse = hw.multiplicative(dataframe, period_len, next_periods)
+    forecast_result, alpha, beta, gamma, rmse = hw.multiplicative(dataframe, period_len, next_periods)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_holt_winter.txt'
     f = open(out_file_name, 'w')
 
-    print('Full timeframe:\n{}'.format(forecast_data), file=f)
+    print('Full timeframe:\n{}'.format(forecast_result), file=f)
     print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(forecast_data[-next_periods:]), file=f)
+    print('Partial timeframe:\n{}'.format(forecast_result[-next_periods:]), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_result], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Holt-Winters Exponential Smoothing with Multiplicative')
-
-    dataframe.plot()
-    forecast_data.plot()
-
+    result.plot()
     plt.show()
 
 # --------------------------------------------------------------------------

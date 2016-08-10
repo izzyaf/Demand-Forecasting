@@ -26,15 +26,15 @@ def execute(dataframe, file_name):
     next_period = 12
 
     # Generate result
-    des_result, rmse, alpha, beta = des.double_exponential_smoothing(dataframe, next_period)
+    forecast_result, rmse, alpha, beta = des.double_exponential_smoothing(dataframe, next_period)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_double_exponential_smoothing.txt'
     f = open(out_file_name, 'w')
 
-    print('Full time frame:\n{}'.format(des_result), file=f)
+    print('Full time frame:\n{}'.format(forecast_result), file=f)
     print('\n------------------------\n', file=f)
-    print('Partial time frame:\n{}'.format(des_result[-next_period:]), file=f)
+    print('Partial time frame:\n{}'.format(forecast_result[-next_period:]), file=f)
     print('\n------------------------\n', file=f)
     print('Alpha = {}'.format(alpha), file=f)
     print('\n------------------------\n', file=f)
@@ -44,13 +44,12 @@ def execute(dataframe, file_name):
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_result], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(1)
-    fig.canvas.set_window_title('Double Exponential Smoothing')
-
-    dataframe.plot()
-    des_result.plot()
-
+    result.plot()
     plt.show()
 
 # --------------------------------------------------------------------------

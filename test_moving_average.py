@@ -1,5 +1,6 @@
-from matplotlib import pyplot as plt
 import pandas as pd
+from matplotlib import pyplot as plt
+
 import moving_average as ma
 import read_file
 
@@ -23,27 +24,27 @@ def load_data(file_name):
 # Moving average
 def execute_ma(dataframe, file_name):
     # Generate result
-    full_frame, partial_frame, rmse = ma.moving_average(dataframe=dataframe, window=3, ahead=5, file_name=file_name)
+    forecast_full_frame, forecast_partial_frame, rmse = ma.moving_average(dataframe=dataframe, window=3, ahead=5,
+                                                                          file_name=file_name)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_moving_average.txt'
     f = open(out_file_name, 'w')
 
-    print('Full timeframe:\n{}'.format(full_frame), file=f)
+    print('Full timeframe:\n{}'.format(forecast_full_frame), file=f)
     print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(partial_frame), file=f)
+    print('Partial timeframe:\n{}'.format(forecast_partial_frame), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_full_frame], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Moving Average')
-
-    dataframe.plot()
-    full_frame.plot()
-
+    result.plot()
     plt.show()
 
 
@@ -52,28 +53,28 @@ def execute_ma(dataframe, file_name):
 # Weighted moving average
 def execute_wma(dataframe, file_name):
     # Generate result
-    full_frame, partial_frame, rmse = ma.weighted_moving_average(dataframe=dataframe, window=5, ahead=5,
-                                                                 file_name=file_name)
+    forecast_full_frame, forecast_partial_frame, rmse = ma.weighted_moving_average(dataframe=dataframe, window=3,
+                                                                                   ahead=5,
+                                                                                   file_name=file_name)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_weighted_moving_average.txt'
     f = open(out_file_name, 'w')
 
-    print('Full timeframe:\n{}'.format(full_frame), file=f)
+    print('Full timeframe:\n{}'.format(forecast_full_frame), file=f)
     print('\n------------------------\n', file=f)
-    print('Partial timeframe:\n{}'.format(partial_frame), file=f)
+    print('Partial timeframe:\n{}'.format(forecast_partial_frame), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
     f.close()
 
+    # Combine dataframe
+    result = pd.concat(objs=[dataframe, forecast_full_frame], axis=1)
+    result.columns = ['Actual', 'Forecast']
+
     # Plot
-    fig = plt.figure(0)
-    fig.canvas.set_window_title('Weighted Moving Average')
-
-    dataframe.plot()
-    full_frame.plot()
-
+    result.plot()
     plt.show()
 
 # --------------------------------------------------------------------------
