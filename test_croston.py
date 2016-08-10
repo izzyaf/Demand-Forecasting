@@ -1,7 +1,8 @@
-from matplotlib import pyplot as plt
 import pandas as pd
-import read_file
+from matplotlib import pyplot as plt
+
 import croston
+import read_file
 
 
 # load data
@@ -18,7 +19,8 @@ def load_data(file_name):
 
 # execute Croston Method
 def execute(dataframe, file_name):
-    forecast_full_frame, forecast_partial_frame, rmse = croston.croston_method(dataframe=dataframe, next_periods=12)
+    forecast_full_frame, forecast_partial_frame, rmse, alpha = croston.croston_method(dataframe=dataframe,
+                                                                                      next_periods=12)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_croston.txt'
@@ -26,8 +28,9 @@ def execute(dataframe, file_name):
 
     print('Full time frame:\n{}'.format(forecast_full_frame), file=f)
     print('\n------------------------\n', file=f)
-    print
     print('Partial time frame:\n{}'.format(forecast_partial_frame), file=f)
+    print('\n------------------------\n', file=f)
+    print('Alpha = {}'.format(alpha), file=f)
     print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 

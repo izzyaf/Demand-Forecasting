@@ -1,5 +1,6 @@
-from matplotlib import pyplot as plt
 import pandas as pd
+from matplotlib import pyplot as plt
+
 import des
 import read_file
 
@@ -22,11 +23,10 @@ def load_data(file_name):
 
 # Double exponential smoothing
 def execute(dataframe, file_name):
-
     next_period = 12
 
     # Generate result
-    des_result, rmse = des.double_exponential_smoothing(dataframe, next_period)
+    des_result, rmse, alpha, beta = des.double_exponential_smoothing(dataframe, next_period)
 
     # Log result to file
     out_file_name = 'data/result_' + file_name.split('.')[0] + '_double_exponential_smoothing.txt'
@@ -34,12 +34,12 @@ def execute(dataframe, file_name):
 
     print('Full time frame:\n{}'.format(des_result), file=f)
     print('\n------------------------\n', file=f)
-
-    predicted_frame = des_result[-next_period:]
-
-    print('Partial time frame:\n{}'.format(predicted_frame), file=f)
+    print('Partial time frame:\n{}'.format(des_result[-next_period:]), file=f)
     print('\n------------------------\n', file=f)
-
+    print('Alpha = {}'.format(alpha), file=f)
+    print('\n------------------------\n', file=f)
+    print('Beta = {}'.format(beta), file=f)
+    print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
     f.close()

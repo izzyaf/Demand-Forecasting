@@ -1,7 +1,7 @@
-from statsmodels.tools import eval_measures
-from scipy.optimize import fmin_l_bfgs_b
 import numpy as np
 import pandas as pd
+from scipy.optimize import fmin_l_bfgs_b
+from statsmodels.tools import eval_measures
 
 
 # --------------------------------------------------------------------------
@@ -69,6 +69,6 @@ def simple_exponential_smoothing(dataframe, next_periods, alpha=None):
     rmse = eval_measures.rmse(dataframe[1:size], forecast_full_frame[0:size - 1])
 
     # Return result
-    return forecast_full_frame, forecast_partial_frame, rmse
+    return forecast_full_frame, forecast_partial_frame, rmse, alpha
 
 # --------------------------------------------------------------------------

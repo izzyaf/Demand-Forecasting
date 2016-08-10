@@ -1,8 +1,10 @@
-from statsmodels.tools import eval_measures
-from scipy.optimize import fmin_l_bfgs_b
 import numpy as np
 import pandas as pd
+from scipy.optimize import fmin_l_bfgs_b
+from statsmodels.tools import eval_measures
 
+
+# -------------------------------------------------
 
 def RMSE(params, *args):
     data_frame = args[0]
@@ -82,10 +84,6 @@ def croston_method(dataframe, next_periods, alpha=None):
         forecast_non_zero_demand[i] = alpha * non_zero_demand[i - 1] + (1 - alpha) * forecast_non_zero_demand[i - 1]
         inter_arrival[i] = alpha * q[i - 1] + (1 - alpha) * inter_arrival[i - 1]
 
-    print(alpha)
-    print(q)
-    print(inter_arrival)
-
     # predict values
     for i in range(n):
         forecast_full_frame.iloc[map[i]] = forecast_non_zero_demand[i]
@@ -96,4 +94,4 @@ def croston_method(dataframe, next_periods, alpha=None):
 
     rmse = eval_measures.rmse(non_zero_demand[1:], forecast_non_zero_demand[1:])
 
-    return forecast_full_frame, forecast_full_frame[-next_periods:], rmse
+    return forecast_full_frame, forecast_full_frame[-next_periods:], rmse, alpha

@@ -1,7 +1,7 @@
-from statsmodels.tools import eval_measures
-from scipy.optimize import fmin_l_bfgs_b
-import pandas as pd
 import numpy as np
+import pandas as pd
+from scipy.optimize import fmin_l_bfgs_b
+from statsmodels.tools import eval_measures
 
 
 # --------------------------------------------------------------------------
@@ -29,7 +29,6 @@ def RMSE(params, *args):
     return rmse
 
 
-# input are series of data, alpha and beta. Output is result data after forecast
 def double_exponential_smoothing(series, next_periods, alpha=None, beta=None):
     # Datetime format
     date_format = '%Y-%m'
@@ -51,7 +50,8 @@ def double_exponential_smoothing(series, next_periods, alpha=None, beta=None):
         initial_values = np.array([0.0, 1.0])
         boundaries = [(0, 1), (0, 1)]
 
-        parameters = fmin_l_bfgs_b(RMSE, x0=initial_values, args=(series, next_periods), bounds=boundaries, approx_grad=True)
+        parameters = fmin_l_bfgs_b(RMSE, x0=initial_values, args=(series, next_periods), bounds=boundaries,
+                                   approx_grad=True)
         alpha, beta = parameters[0]
 
     for n in range(1, size):
@@ -65,6 +65,6 @@ def double_exponential_smoothing(series, next_periods, alpha=None, beta=None):
 
     rmse = eval_measures.rmse(series, forecast[:-next_periods])
 
-    return forecast, rmse
+    return forecast, rmse, alpha, beta
 
 # --------------------------------------------------------------------------
