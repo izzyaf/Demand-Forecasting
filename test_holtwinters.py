@@ -37,6 +37,12 @@ def execute(dataframe, file_name):
     print('\n------------------------\n', file=f)
     print('Partial timeframe:\n{}'.format(forecast_result[-next_periods:]), file=f)
     print('\n------------------------\n', file=f)
+    print('Alpha = {}'.format(alpha), file=f)
+    print('\n------------------------\n', file=f)
+    print('Beta = {}'.format(beta), file=f)
+    print('\n------------------------\n', file=f)
+    print('Gamma = {}'.format(gamma), file=f)
+    print('\n------------------------\n', file=f)
     print('RMSE = {}'.format(rmse), file=f)
 
     f.close()
