@@ -12,7 +12,10 @@ import test_ses as tses
 def ses():
     # test simple exponential smoothing
     print('Test simple exponential smoothing')
+
     input_file_name = 'ses_sales_diet_product.csv'
+    print('Input file: {}'.format(input_file_name))
+
     data_frame = tses.load_data(input_file_name)
     tses.execute(data_frame, input_file_name)
 
@@ -23,6 +26,8 @@ def des():
     print('Test double exponential smoothing')
     file_name = 'm3.csv'
 
+    print('Input file: {}'.format(file_name))
+
     df = tdes.load_data(file_name)
     tdes.execute(df, file_name)
 
@@ -32,7 +37,10 @@ def des():
 def mva():
     # test moving average
     print('Test moving average')
+
     input_file_name = 'tshirt.csv'
+    print('Input file: {}'.format(input_file_name))
+
     data_frame = tma.load_data(input_file_name)
     tma.execute_ma(data_frame, input_file_name)
 
@@ -42,7 +50,10 @@ def mva():
 def wmva():
     # test weighted moving average
     print('Test weighted moving average')
+
     input_file_name = 'tshirt.csv'
+    print('Input file: {}'.format(input_file_name))
+
     data_frame = tma.load_data(input_file_name)
     tma.execute_wma(data_frame, input_file_name)
 
@@ -51,7 +62,10 @@ def wmva():
 
 def hw():
     print('Test Holt Winters')
-    file_name = 'car.csv'
+
+    file_name = 'm3.csv'
+    print('Input file: {}'.format(file_name))
+
     df = thw.load_data(file_name)
     thw.execute(df, file_name)
 
@@ -61,7 +75,10 @@ def hw():
 
 def croston():
     print('Test Croston\'s Method')
+
     file_name = 'intermittent_umpire_chair_paris.csv'
+    print('Input file: {}'.format(file_name))
+
     df = tcr.load_data(file_name)
     tcr.execute(df, file_name)
 
